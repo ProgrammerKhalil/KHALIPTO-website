@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KHALIPTO - Crypto Trading Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .intro {
+            text-align: center;
+            padding: 50px 20px;
+            background-color: #005aee;
+            color: white;
+        }
+
+        .crypto-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .crypto-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .crypto-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #005aee;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #003bb5;
+        }
+
+        .trade-section {
+            margin-top: 30px;
+        }
+
+        .trade-section input {
+            padding: 10px;
+            margin: 10px;
+            width: 150px;
+        }
+
+        .balance {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #1a1a1a;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Welcome to KHALIPTO</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Markets</a></li>
+                <li><a href="#">Trade</a></li>
+                <li><a href="#">Portfolio</a></li>
+                <li><a href="#">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="intro">
+        <h2>Trade Your Favorite Cryptocurrencies</h2>
+        <p>Experience the best crypto trading platform.</p>
+        <button class="btn">Start Trading</button>
+    </section>
+
+    <div class="container">
+        <h2>Top Cryptocurrencies</h2>
+        <div class="crypto-grid">
+            <div class="crypto-card">
+                <h3>Bitcoin (BTC)</h3>
+                <p>Price: <span id="btc-price">$0.00</span></p>
+                <button class="btn" onclick="showTradeModal('BTC', 'btc-price')">Buy Now</button>
+            </div>
+            <div class="crypto-card">
+                <h3>Ethereum (ETH)</h3>
+                <p>Price: <span id="eth-price">$0.00</span></p>
+                <button class="btn" onclick="showTradeModal('ETH', 'eth-price')">Buy Now</button>
+            </div>
+            <div class="crypto-card">
+                <h3>Ripple (XRP)</h3>
+                <p>Price: <span id="xrp-price">$0.00</span></p>
+                <button class="btn" onclick="showTradeModal('XRP', 'xrp-price')">Buy Now</button>
+            </div>
+        </div>
+
+        <div class="balance">
+            <h2>Your Account Balance</h2>
+            <p>BTC Balance: <span id="btc-balance">0.0</span> BTC</p>
+            <p>ETH Balance: <span id="eth-balance">0.0</span> ETH</p>
+            <p>XRP Balance: <span id="xrp-balance">0.0</span> XRP</p>
+            <p>USD Balance: <span id="usd-balance">$10,000.00</span></p>
+        </div>
+
+        <div class="trade-section" id="trade-section" style="display:none;">
+            <h3>Trade <span id="crypto-name"></span></h3>
+            <p>Price per unit: <span id="crypto-price"></span></p>
+            <input type="number" id="trade-amount" placeholder="Amount" min="0.001" step="0.001">
+            <button class="btn" onclick="executeTrade()">Confirm Trade</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 KHALIPTO. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        let balances = {
+            usd: 10000,
+            btc: 0,
+            eth: 0,
+            xrp: 0
+        };
+
+        // Fetch real-time cryptocurrency prices using CoinGecko API
+        async function fetchCryptoPrices() {
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,ripple&vs_currencies=usd');
+                const data = await response.json();
+
+                // Update the UI with real-time prices
+                document.getElementById('btc-price').textContent = '$' + data.bitcoin.usd.toLocaleString();
+                document.getElementById('eth-price').textContent = '$' + data.ethereum.usd.toLocaleString();
+                document.getElementById('xrp-price').textContent = '$' + data.ripple.usd.toLocaleString();
+            } catch (error) {
+                console.error('Error fetching crypto prices:', error);
+            }
+        }
+
+        // Fetch prices on page load
+        fetchCryptoPrices();
+
+        // Update prices every 30 seconds
+        setInterval(fetchCryptoPrices, 30000);
+
+        let selectedCrypto;
+        let selectedCryptoPrice;
+
+        function showTradeModal(crypto, priceId) {
+            selectedCrypto = crypto;
+            selectedCryptoPrice = parseFloat(document.getElementById(priceId).textContent.replace('$', '').replace(',', ''));
+
+            document.getElementById('crypto-name').textContent = crypto;
+            document.getElementById('crypto-price').textContent = `$${selectedCryptoPrice.toFixed(2)}`;
+            document.getElementById('trade-section').style.display = 'block';
+        }
+
+        function executeTrade() {
+            const amount = parseFloat(document.getElementById('trade-amount').value);
+
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount.');
+                return;
+            }
+
+            const totalCost = amount * selectedCryptoPrice;
+
+            if (balances.usd < totalCost) {
+                alert('Insufficient USD balance.');
+                return;
+            }
+
+            balances.usd -= totalCost;
+            balances[selectedCrypto.toLowerCase()] += amount;
+
+            document.getElementById('usd-balance').textContent = `$${balances.usd.toFixed(2)}`;
+            document.getElementById(`${selectedCrypto.toLowerCase()}-balance`).textContent = balances[selectedCrypto.toLowerCase()].toFixed(4) + ` ${selectedCrypto}`;
+
+            alert(`You have successfully bought ${amount.toFixed(4)} ${selectedCrypto}`);
+            document.getElementById('trade-section').style.display = 'none';
+        }
+
+    </script>
+
+</body>
+</html>

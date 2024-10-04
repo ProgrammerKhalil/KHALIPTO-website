@@ -1,0 +1,53 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #282c34;
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: #61dafb;
+    padding: 15px;
+}
+
+.navbar h1 {
+    color: #282c34;
+}
+
+.login-buttons button {
+    background-color: #444;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.login-buttons button:hover {
+    background-color: #282c34;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+.crypto-rate {
+    background-color: #444;
+    padding: 20px;
+    border-radius: 10px;
+    display: inline-block;
+    margin: 20px;
+    box-shadow: 2px 2px 10px #000;
+}
+
+.crypto-rate h2 {
+    margin: 0;
+    color: #61dafb;
+}
+
+.crypto-rate p {
+    font-size: 24px;
+}
